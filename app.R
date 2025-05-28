@@ -53,26 +53,47 @@ state_map <- c(
   setNames(states$state_name, str_to_lower(state_pairs$de))
 )
 
-# 1b) Capital map
+# after you load and mutate `states` and define split_en_de():
 cap_pairs <- split_en_de(states$capital)
 capital_map <- c(
-  setNames(states$capital, str_to_lower(cap_pairs$en)),
-  setNames(states$capital, str_to_lower(cap_pairs$de))
+  setNames(states$state_name, str_to_lower(cap_pairs$en)),
+  setNames(states$state_name, str_to_lower(cap_pairs$de))
 )
 
-# 1c) Largest city map
 lg_pairs <- split_en_de(states$largest_city)
 largest_map <- c(
-  setNames(states$largest_city, str_to_lower(lg_pairs$en)),
-  setNames(states$largest_city, str_to_lower(lg_pairs$de))
+  setNames(states$state_name, str_to_lower(lg_pairs$en)),
+  setNames(states$state_name, str_to_lower(lg_pairs$de))
 )
 
-# 1d) Second-largest city map
 sl_pairs <- split_en_de(states$second_largest_city)
 second_map <- c(
-  setNames(states$second_largest_city, str_to_lower(sl_pairs$en)),
-  setNames(states$second_largest_city, str_to_lower(sl_pairs$de))
+  setNames(states$state_name, str_to_lower(sl_pairs$en)),
+  setNames(states$state_name, str_to_lower(sl_pairs$de))
 )
+
+
+
+# # 1b) Capital map
+# cap_pairs <- split_en_de(states$capital)
+# capital_map <- c(
+#   setNames(states$capital, str_to_lower(cap_pairs$en)),
+#   setNames(states$capital, str_to_lower(cap_pairs$de))
+# )
+# 
+# # 1c) Largest city map
+# lg_pairs <- split_en_de(states$largest_city)
+# largest_map <- c(
+#   setNames(states$largest_city, str_to_lower(lg_pairs$en)),
+#   setNames(states$largest_city, str_to_lower(lg_pairs$de))
+# )
+# 
+# # 1d) Second-largest city map
+# sl_pairs <- split_en_de(states$second_largest_city)
+# second_map <- c(
+#   setNames(states$second_largest_city, str_to_lower(sl_pairs$en)),
+#   setNames(states$second_largest_city, str_to_lower(sl_pairs$de))
+# )
 
 
 
@@ -409,141 +430,134 @@ server <- function(input, output, session) {
     req(input$state_guess, current_state())
     total_attempts(total_attempts() + 1)
     
-    answered        <- current_state()
-    feedback_parts  <- character()
-    dist_tolerance  <- 5
+    answered       <- current_state()
+    feedback_parts <- character()
+    dist_tol       <- 5
     
-    # --- STATE: exact via map, else fuzzy via map‐keys ---
-    key_state      <- normalize_guess(input$state_guess)
-    exact_state    <- state_map[key_state]
-    is_strict_state <- !is.na(exact_state) && exact_state == answered
+    # --- STATE GUESS ---
+    key_state       <- normalize_guess(input$state_guess)
+    mapped_state    <- state_map[key_state]
+    is_strict_state <- !is.na(mapped_state) && mapped_state == answered
     
     if (is_strict_state) {
       feedback_parts <- c(feedback_parts,
-                          paste0("✅ ", answered, " is the correct state!")
-      )
+                          paste0("✅ ", answered, " is the correct state!"))
     } else {
-      # compute distances to every map key
-      keys   <- names(state_map)
-      dists  <- stringdist(key_state, keys, method = "lv")
+      # fuzzy fallback
+      dists  <- stringdist(key_state, names(state_map), method="lv")
       i_best <- which.min(dists)
-      best_key   <- keys[i_best]
+      best_key   <- names(state_map)[i_best]
       best_state <- state_map[best_key]
       best_dist  <- dists[i_best]
       
-      if (best_state == answered && best_dist <= dist_tolerance) {
+      if (best_state == answered && best_dist <= dist_tol) {
         feedback_parts <- c(feedback_parts,
-                            paste0("❗ Misspelling: You are off by ", best_dist,
-                                   " character", ifelse(best_dist>1, "s", ""))
-        )
+                            paste0("❗ Misspelling: off by ", best_dist,
+                                   " character", ifelse(best_dist>1,"s","")))
       } else {
         feedback_parts <- c(feedback_parts, "❌ State incorrect")
         wrong_states(c(wrong_states(), answered))
       }
     }
     
-    
-    # --- CAPITAL: only if state was strict correct ---
-    is_strict_cap <- TRUE
+    # --- CAPITAL GUESS ---
     if (is_strict_state && input$guess_capital) {
-      true_cap      <- states |> filter(state_name == answered) |> pull(capital)
-      guess_cap     <- normalize_capital(input$capital_guess)
-      dist_cap      <- stringdist(guess_cap, normalize_capital(true_cap), method = "lv")
-      is_strict_cap <- guess_cap == normalize_capital(true_cap)
+      key_cap       <- normalize_guess(input$capital_guess)
+      mapped_cap    <- capital_map[key_cap]
+      is_strict_cap <- !is.na(mapped_cap) && mapped_cap == answered
       
       if (is_strict_cap) {
-        feedback_parts <- c(
-          feedback_parts,
-          paste0("✅ ", true_cap, " is the correct capital!")
-        )
-      } else if (dist_cap <= dist_tolerance) {
-        feedback_parts <- c(
-          feedback_parts,
-          paste0("❗ Misspelling (capital): off by ", dist_cap,
-                 " character", ifelse(dist_cap > 1, "s", ""))
-        )
-        wrong_capitals(c(wrong_capitals(), answered))
+        feedback_parts <- c(feedback_parts,
+                            paste0("✅ ", input$capital_guess,
+                                   " is the correct capital of ", answered, "!"))
       } else {
-        feedback_parts <- c(feedback_parts, "❌ Capital incorrect")
-        wrong_capitals(c(wrong_capitals(), answered))
+        # typo fallback against the true (German) name
+        true_cap <- states %>% filter(state_name==answered) %>% pull(capital)
+        dist_cap <- stringdist(key_cap, normalize_city(true_cap), method="lv")
+        if (dist_cap <= dist_tol) {
+          feedback_parts <- c(feedback_parts,
+                              paste0("❗ Misspelling (capital): off by ", dist_cap,
+                                     " character", ifelse(dist_cap>1,"s","")))
+        } else {
+          feedback_parts <- c(feedback_parts, "❌ Capital incorrect")
+          wrong_capitals(c(wrong_capitals(), answered))
+        }
       }
     }
     
-    # --- LARGEST CITY: only if state was strict correct ---
-    is_strict_largest <- TRUE
+    # --- LARGEST CITY GUESS ---
     if (is_strict_state && input$guess_largest) {
-      true_largest        <- states |> filter(state_name == answered) |> pull(largest_city)
-      guess_largest       <- normalize_city(input$largest_guess)
-      dist_largest        <- stringdist(guess_largest, normalize_city(true_largest), method = "lv")
-      is_strict_largest   <- guess_largest == normalize_city(true_largest)
+      key_lg       <- normalize_guess(input$largest_guess)
+      mapped_lg    <- largest_map[key_lg]
+      is_strict_lg <- !is.na(mapped_lg) && mapped_lg == answered
       
-      if (is_strict_largest) {
-        feedback_parts <- c(
-          feedback_parts,
-          paste0("✅ ", true_largest, " is the correct largest city!")
-        )
-      } else if (dist_largest <= dist_tolerance) {
-        feedback_parts <- c(
-          feedback_parts,
-          paste0("❗ Misspelling (largest): off by ", dist_largest,
-                 " character", ifelse(dist_largest > 1, "s", ""))
-        )
-        wrong_largests(c(wrong_largests(), answered))
+      if (is_strict_lg) {
+        feedback_parts <- c(feedback_parts,
+                            paste0("✅ ", input$largest_guess,
+                                   " is the correct largest city of ", answered, "!"))
       } else {
-        feedback_parts <- c(feedback_parts, "❌ Largest city incorrect")
-        wrong_largests(c(wrong_largests(), answered))
+        true_lg <- states %>% filter(state_name==answered) %>% pull(largest_city)
+        dist_lg <- stringdist(key_lg, normalize_city(true_lg), method="lv")
+        if (dist_lg <= dist_tol) {
+          feedback_parts <- c(feedback_parts,
+                              paste0("❗ Misspelling (largest): off by ", dist_lg,
+                                     " character", ifelse(dist_lg>1,"s","")))
+        } else {
+          feedback_parts <- c(feedback_parts, "❌ Largest city incorrect")
+          wrong_largests(c(wrong_largests(), answered))
+        }
       }
     }
     
-    # --- SECOND LARGEST CITY: only if state was strict correct ---
-    is_strict_second <- TRUE
+    # --- SECOND-LARGEST CITY GUESS ---
     if (is_strict_state && input$guess_second) {
-      true_second        <- states |> filter(state_name == answered) |> pull(second_largest_city)
-      guess_second       <- normalize_city(input$second_guess)
-      dist_second        <- stringdist(guess_second, normalize_city(true_second), method = "lv")
-      is_strict_second   <- guess_second == normalize_city(true_second)
+      key_sl       <- normalize_guess(input$second_guess)
+      mapped_sl    <- second_map[key_sl]
+      is_strict_sl <- !is.na(mapped_sl) && mapped_sl == answered
       
-      if (is_strict_second) {
-        feedback_parts <- c(
-          feedback_parts,
-          paste0("✅ ", true_second, " is the correct second largest city!")
-        )
-      } else if (dist_second <= dist_tolerance) {
-        feedback_parts <- c(
-          feedback_parts,
-          paste0("❗ Misspelling (second): off by ", dist_second,
-                 " character", ifelse(dist_second > 1, "s", ""))
-        )
-        wrong_second_largests(c(wrong_second_largests(), answered))
+      if (is_strict_sl) {
+        feedback_parts <- c(feedback_parts,
+                            paste0("✅ ", input$second_guess,
+                                   " is the correct second-largest city of ", answered, "!"))
       } else {
-        feedback_parts <- c(feedback_parts, "❌ Second largest city incorrect")
-        wrong_second_largests(c(wrong_second_largests(), answered))
+        true_sl <- states %>% filter(state_name==answered) %>% pull(second_largest_city)
+        dist_sl <- stringdist(key_sl, normalize_city(true_sl), method="lv")
+        if (dist_sl <= dist_tol) {
+          feedback_parts <- c(feedback_parts,
+                              paste0("❗ Misspelling (second): off by ", dist_sl,
+                                     " character", ifelse(dist_sl>1,"s","")))
+        } else {
+          feedback_parts <- c(feedback_parts, "❌ Second largest city incorrect")
+          wrong_second_largests(c(wrong_second_largests(), answered))
+        }
       }
     }
     
-    # render feedback text
-    output$feedback <- renderText(paste(feedback_parts, collapse = "\n"))
+    # render feedback
+    output$feedback <- renderText(paste(feedback_parts, collapse="\n"))
     
-    # advance only when **all** strict checks passed
-    if (is_strict_state &&
-        is_strict_cap &&
-        is_strict_largest &&
-        is_strict_second) {
-      
+    # advance only if *all* strict checks passed
+    if (
+      is_strict_state &&
+      (!input$guess_capital || is_strict_cap) &&
+      (!input$guess_largest || is_strict_lg) &&
+      (!input$guess_second || is_strict_sl)
+    ) {
+      # record a correct answer and move on...
       guessed_states(c(guessed_states(), answered))
       score(score() + 1)
       remaining_states(setdiff(remaining_states(), answered))
       
-      # rebuild labels and update map
-      guessed_df <- states |> filter(state_name %in% guessed_states())
+      # update map
+      guessed_df <- states %>% filter(state_name %in% guessed_states())
       labels <- paste0(
         guessed_df$state_name,
-        "<br>Population (2023): ",
-        format(guessed_df$state_population, big.mark = ",")
-      ) |> lapply(htmltools::HTML)
+        "<br>Population: ",
+        format(guessed_df$state_population_2023, big.mark=",")
+      ) %>% lapply(htmltools::HTML)
       
-      leafletProxy("us_map") |>
-        clearGroup("guessed") |>
+      leafletProxy("country_map") %>%
+        clearGroup("guessed") %>%
         addPolygons(
           data        = guessed_df,
           fillColor   = "steelblue",
@@ -555,15 +569,15 @@ server <- function(input, output, session) {
         )
       add_city_markers(answered)
       
-      # next state
+      # next question
       next_states <- remaining_states()
-      current_state(if (length(next_states) > 0) next_states[1] else NULL)
+      current_state(if (length(next_states)>0) next_states[1] else NULL)
       
       # clear inputs
-      updateTextInput(session, "state_guess",   value = "")
-      updateTextInput(session, "capital_guess", value = "")
-      updateTextInput(session, "largest_guess", value = "")
-      updateTextInput(session, "second_guess",  value = "")
+      updateTextInput(session, "state_guess",   value="")
+      updateTextInput(session, "capital_guess", value="")
+      updateTextInput(session, "largest_guess", value="")
+      updateTextInput(session, "second_guess",  value="")
     }
   })
   
@@ -640,7 +654,7 @@ server <- function(input, output, session) {
   })
   # Restart handler
   observeEvent(input$restart, {
-    if (input$save) {
+    if (!is.null(input$save) && input$save) {
       save_quiz_results()
     }
     # reset your quiz state
@@ -683,64 +697,64 @@ server <- function(input, output, session) {
           group       = "states"
         )
     }
+    
+    output$feedback <- renderText("🌀 Quiz restarted! Good luck!")
+    
+    # clear out the inputs
+    updateTextInput(session, "state_guess", value = "")
+    updateTextInput(session, "capital_guess", value = "")
+    updateTextInput(session, "largest_guess", value = "")
+    updateTextInput(session, "second_guess", value = "")
+  })
   
-  output$feedback <- renderText("🌀 Quiz restarted! Good luck!")
   
-  # clear out the inputs
-  updateTextInput(session, "state_guess", value = "")
-  updateTextInput(session, "capital_guess", value = "")
-  updateTextInput(session, "largest_guess", value = "")
-  updateTextInput(session, "second_guess", value = "")
-})
-
-
-# Score display
-output$score <- renderText({
-  paste("Score:", score(), "/", total_attempts())
-})
-
-save_quiz_results <- function() {
-  if (input$user_name == "") {
-    showNotification(
-      "⚠️ Please enter your name before saving.",
-      type = "warning"
+  # Score display
+  output$score <- renderText({
+    paste("Score:", score(), "/", total_attempts())
+  })
+  
+  save_quiz_results <- function() {
+    if (input$user_name == "") {
+      showNotification(
+        "⚠️ Please enter your name before saving.",
+        type = "warning"
+      )
+      return()
+    }
+    
+    result_row <- data.frame(
+      date = as.character(Sys.Date()),
+      name = input$user_name,
+      score = score(),
+      wrong_states = paste(wrong_states(), collapse = "; "),
+      wrong_capitals = if (input$guess_capital)
+        paste(wrong_capitals(), collapse = "; ") else NA,
+      wrong_largests = if (input$guess_largest)
+        paste(wrong_largests(), collapse = "; ") else NA,
+      wrong_second_largests = if (input$guess_second)
+        paste(wrong_second_largests(), collapse = "; ") else NA,
+      stringsAsFactors = FALSE
     )
-    return()
+    
+    sheet_url <- paste0(
+      "https://docs.google.com/spreadsheets/d/",
+      "13T0IL4pZO2RNwT-kWqbc7O4Trv2uRBkew8occILbWz8"
+    )
+    
+    tryCatch(
+      {
+        googlesheets4::sheet_append(sheet_url, result_row)
+        showNotification("✅ Results saved to Google Sheets!", type = "message")
+      },
+      error = function(e) {
+        showNotification(paste("❌ Save failed:", e$message), type = "error")
+      }
+    )
   }
   
-  result_row <- data.frame(
-    date = as.character(Sys.Date()),
-    name = input$user_name,
-    score = score(),
-    wrong_states = paste(wrong_states(), collapse = "; "),
-    wrong_capitals = if (input$guess_capital)
-      paste(wrong_capitals(), collapse = "; ") else NA,
-    wrong_largests = if (input$guess_largest)
-      paste(wrong_largests(), collapse = "; ") else NA,
-    wrong_second_largests = if (input$guess_second)
-      paste(wrong_second_largests(), collapse = "; ") else NA,
-    stringsAsFactors = FALSE
-  )
-  
-  sheet_url <- paste0(
-    "https://docs.google.com/spreadsheets/d/",
-    "13T0IL4pZO2RNwT-kWqbc7O4Trv2uRBkew8occILbWz8"
-  )
-  
-  tryCatch(
-    {
-      googlesheets4::sheet_append(sheet_url, result_row)
-      showNotification("✅ Results saved to Google Sheets!", type = "message")
-    },
-    error = function(e) {
-      showNotification(paste("❌ Save failed:", e$message), type = "error")
-    }
-  )
-}
-
-observeEvent(input$save_results, {
-  save_quiz_results()
-})
+  observeEvent(input$save_results, {
+    save_quiz_results()
+  })
 }
 
 shinyApp(ui, server)
