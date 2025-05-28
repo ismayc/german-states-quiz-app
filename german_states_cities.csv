@@ -1,0 +1,17 @@
+state_name,capital,state_population_2023,largest_city,largest_city_population_2022,second_largest_city,second_largest_city_population_2022,latitude_capital,latitude_largest_city,latitude_second_largest_city,longitude_capital,longitude_largest_city,longitude_second_largest_city
+Baden-Württemberg / Baden-Württemberg,Stuttgart / Stuttgart,11230740,Stuttgart / Stuttgart,610458,Mannheim / Mannheim,313693,48.7775,48.7775,49.48778,9.18,9.18,8.46611
+Bavaria / Bayern,Munich / München,13176426,Munich / München,1478638,Nuremberg / Nürnberg,522554,48.1375,48.1375,49.45389,11.575,11.575,11.0775
+Berlin / Berlin,Berlin / Berlin,3662381,Berlin / Berlin,3596999,,,52.52,52.52,,13.405,13.405,
+Brandenburg / Brandenburg,Potsdam / Potsdam,2554464,Potsdam / Potsdam,185750,Cottbus / Cottbus,94778,52.40056,52.40056,51.76056,13.05917,13.05917,14.33417
+Bremen / Bremen,Bremen / Bremen,702655,Bremen / Bremen,575071,Bremerhaven / Bremerhaven,118133,53.0793,53.0793,53.55,8.8017,8.8017,8.58333
+Hamburg / Hamburg,Hamburg / Hamburg,1851596,Hamburg / Hamburg,1851596,,,53.5511,53.5511,,9.9937,9.9937,
+Hesse / Hessen,Wiesbaden / Wiesbaden,6267546,Frankfurt / Frankfurt am Main,743268,Wiesbaden / Wiesbaden,284260,50.0825,50.11056,50.0825,8.24,8.68222,8.24
+Lower Saxony / Niedersachsen,Hanover / Hannover,8008135,Hanover / Hannover,513291,Brunswick / Braunschweig,252816,52.367,52.367,52.267,9.717,9.717,10.517
+Mecklenburg-Western Pomerania / Mecklenburg-Vorpommern,Schwerin / Schwerin,1578041,Rostock / Rostock,203470,Schwerin / Schwerin,96447,53.633,54.083,53.633,11.417,12.133,11.417
+North Rhine-Westphalia / Nordrhein-Westfalen,Düsseldorf / Düsseldorf,18017520,Cologne / Köln,1084831,Düsseldorf / Düsseldorf,629047,51.22556,50.93639,51.22556,6.77667,6.95278,6.77667
+Rhineland-Palatinate / Rheinland-Pfalz,Mainz / Mainz,4125163,Mainz / Mainz,220552,Ludwigshafen / Ludwigshafen am Rhein,172889,49.99944,49.99944,49.48111,8.27361,8.27361,8.43528
+Saarland / Saarland,Saarbrücken / Saarbrücken,1014047,Saarbrücken / Saarbrücken,179296,Neunkirchen / Neunkirchen,46906,49.233,49.233,49.35,7.0,7.0,7.167
+Saxony / Sachsen,Dresden / Dresden,4054689,Leipzig / Leipzig,616093,Dresden / Dresden,563311,51.05,51.34,51.05,13.74,12.375,13.74
+Saxony-Anhalt / Sachsen-Anhalt,Magdeburg / Magdeburg,2144570,Halle / Halle (Saale),226586,Magdeburg / Magdeburg,241517,52.13167,51.48278,52.13167,11.63917,11.96972,11.63917
+Schleswig-Holstein / Schleswig-Holstein,Kiel / Kiel,2953202,Kiel / Kiel,247717,Lübeck / Lübeck,218095,54.32333,54.32333,53.86972,10.13944,10.13944,10.68639
+Thuringia / Thüringen,Erfurt / Erfurt,2114870,Erfurt / Erfurt,214969,Jena / Jena,111191,50.97806,50.97806,50.92722,11.02889,11.02889,11.58611

@@ -1,0 +1,13 @@
+name: german-states-quiz-app
+title: german-states-quiz-app
+username: chesterismay
+account: chesterismay
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14727791
+bundleId: 10326206
+url: https://chesterismay.shinyapps.io/german-states-quiz-app/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|german_states_cities.csv|german_states_cities.rds|german_states_population_2023.csv|get_coordinates.R|get_geometries.R|shiny-sheets-writer-key.json

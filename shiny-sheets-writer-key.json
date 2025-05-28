@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "us-states-quiz-shiny-app",
+  "private_key_id": "1090786a804262cc3e140fbf6a11b439226597d3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCXmFF6caNM3ZEZ\nbcLQFD/gMSvRuDb4HB/QdCClXerKKGvNd/kFkGTxi+LXNKzgMHUkN9Z1XYzAX96V\n5515etoO5Fix8kFi6Yey6APYOkRA4Tb64xwD60nZ9v2Xbm0Ra3H6MmGoUO5h8B4M\nl5cS+QUmCr0B36sqsAfEa3Uyw9mfPeRIOPAfLEdsvYnzzpiHvK9e3rXdxo0wR0NB\nX1ObyXq1BENCoDtOxmtygqGRzRO+tdv7pKbBijm4XL8tt28zQB81/8JVbPk2ALPf\nA/AOGXNxx9wesKE60ydNbiOEWbfAiWUqn3LGDmq6QCdhVyD4FX4kwXHQpcZPbJE0\nRxUFDwVBAgMBAAECggEAAdIgtGhLWP/WSihmgnT5JBpjF4SaFcEnZAETvU4TT7Sh\nlYO0jYEOUqpmofAY3XknhwpWp0KQOg/3Y/SMEH/4a4e0RbA5DH+X6NRe63NzthXJ\nFnAGOkkoB21Z3r5C+BvCxYm3tjur8/2G1t7hP9HsN73sRuqmqyoXGyBb9YKjCVsX\nuEbFgnuJo0qlMh0CSjT/vKnnVmqQHb0wSalvq3jK3poRnrsHU9WH2Ay/BC12weMV\nVJS8ObDDvIDrxJZCQVRgUr45hnupc7pvMuHKHhq8MDeUlKYl/I6ahw9PmS56GRWF\nmn+l5vj5ehpGb7HdzB/Hq2K3AeFa3lvNhOg8fshIAwKBgQDJBOFbNOB+wlqHP5PJ\nyDaBsaxBOKo2Gm+69DeK7z0KsbEzFC9IAdicB1a0G/616EtiSlMKYlScKwaW+j9N\n+9pDEGa+plwGuKYMgP37GWN2hejNSAzbYl3DNG4fnMkmjX7lGofCMgIb0L1gVfQx\nRYUByEG2n+eVrbUcGpvRuoDjFwKBgQDBDtKHccmoao1Y20wvGtDxPd94f2r6Wr42\nBBJEEc/PHoAImqLMUbDUDc4UulMvRYeC9kwzBpdQEC9sD3hKHFy0RNtvGbsOjFnd\nTfuokHvJjXiSbCpCm50YGzh/U6zFKPl5R+TTVlnjkMDF3J6P3rbtsycXFmQT/1LJ\nziK0FM3xZwKBgAiY99aBzXQ+dcbBFl4T/RjQ85Aaj1UfDlZNqa58ivzRGsYXf+ox\nggUyXyf25o77L3Y1vZV9HSdMw8xjSZ/ZPL2PjwVqchcrgJaaUcKSlGl2Ur2s7jfX\n3jDCJk+d0hCfDqVX3CSXJPXxmJftNTOCSK0J1p2r+yiwtEVOcgmnU2njAoGAU4ib\nVZnJnMLF+C2jUDp1L/0KpbPUURFUfkDSuntOhJr44UAvsuKh9Y8nnVZlye12zhbO\nL8HpVO475rDm5oJRJnsoy3DBvHDELXqhqnUh6rr48bo1qu50UcrtbkKBXin1kCGo\nhD031bx7fOGSBkRiuIUtI9M/aFuwsbsszui1l38CgYBeKVsW7Me7/XKjcpWPkdNa\nNXSctoSt95TNF+FnSV5hIWPb1cozZcdjkOe3m25B7NdMM9y9H9MsXPRZn/t47dYI\n2ZtHn3YWQheLDLQnHrccrZW4fDkjKjurcgbVZXBZ+iccekw5Zi9+FUfNs3zUrWxP\nd0zgU7TWDZMYGnMfT4OAUg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "shiny-sheets-writer@us-states-quiz-shiny-app.iam.gserviceaccount.com",
+  "client_id": "101302538310264247841",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/shiny-sheets-writer%40us-states-quiz-shiny-app.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
