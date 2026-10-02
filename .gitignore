@@ -5,3 +5,7 @@
 .DS_Store
 .quarto
 shiny-sheets-writer-key.json
+
+# Local shinylive build output (built in CI by .github/workflows/pages.yaml)
+_app/
+_site/

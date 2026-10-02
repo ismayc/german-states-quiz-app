@@ -3,6 +3,9 @@
 A [shiny app](https://chesterismay.shinyapps.io/german-states-quiz-app/) that quizzes users on German federal states and their capitals. 
 The app provides a user-friendly interface for learning and testing knowledge about German geography.
 
+A browser-only [shinylive version](https://ismayc.github.io/german-states-quiz-app/) runs the same `app.R` with webR, so it needs no server (the first load takes about a minute while R starts).
+It is built and published by `.github/workflows/pages.yaml`. Its icons and link-preview image come from the SVG sources in `site/`; re-render the PNGs with `Rscript site/make_assets.R`.
+
 ## Features
 
 * **Full 50-state + DC quiz**

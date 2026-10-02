@@ -261,7 +261,8 @@ server <- function(input, output, session) {
   # Draw the country map
   output$country_map <- renderLeaflet({
     leaflet() |>
-      addProviderTiles("CartoDB.Positron") |>
+      # CARTO basemaps now need an API key; Esri's gray canvas does not
+      addProviderTiles("Esri.WorldGrayCanvas") |>
       setView(lng = 10.0, lat = 51.2, zoom = 6) |>
       # the always‐visible border:
       addPolygons(
